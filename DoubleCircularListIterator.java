@@ -15,7 +15,6 @@ public class DoubleCircularListIterator<E> implements ListIterator<E> {
     private Caja actual;
     private int tam;
     
-    // Bob
     public DoubleCircularListIterator(DoubleCircularList<E> lista){
 		elemento=lista;
 		primer=elemento.getHead();
@@ -44,25 +43,17 @@ public class DoubleCircularListIterator<E> implements ListIterator<E> {
      * Remueve de la lista el ultimo elemento retornado por next()
      */
     public void unlink(){
-// 		if (elemento.getSize()==1) 
-// 			elemento.clear(); //es el unico elemento
-// 		else {
-// 			if (actual==null){ 
-// 				//es el ultimo elemento de la lista
-// 				this.elemento.getTail().getAnt().setSig(null);
-// 						//el anterior del ultimo ahora apunta a null 
-// 				this.elemento.setTail(this.elemento.getTail().getAnt());//
-// 			} else {
-// 				if (actual.getAnt().getAnt()==null) {
-// 					//es el primer elemento de la lista
-// 					actual.setAnt(null);
-// 					elemento.setHead(actual);
-// 				} else { 
-// 					//es un elemento intermedio
-// 					actual.getAnt().getAnt().setSig(actual);
-// 				}
-// 			}
-// 		}
+		if (elemento.getSize()==1) 
+			elemento.clear(); //es el unico elemento
+		else {
+
+			if (actual.getAnt()==primer){//si se borrara primer
+				primer=actual;
+				elemento.setHeadSuper(actual);
+			}
+			actual.getAnt().getAnt().setSig(actual);
+			actual.setAnt(actual.getAnt().getAnt());
+		}
     }
 // fin DoubleCircularListIterator
 }

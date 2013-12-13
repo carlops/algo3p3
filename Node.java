@@ -9,35 +9,77 @@ public class Node implements Cloneable {
 
     // Se asume que el id es unico
     private String id;
-    private boolean visitado;
+    private MyList visitadores;
     private int distancia;
     private int costo;
+    private Node anterior;
+    private boolean visitado;
+    private int total;
 
     public Node(String i){
-	id = new String(i);
-	visitado = false;
-	distancia = 0;
-	costo = 0;
-    }
+		id = new String(i);
+		visitadores = new MyList();
+		distancia=-1;
+		costo = 0;
+		anterior=null;
+		visitado=false;
+		total=0;
+	}
+	
+	public Node(String i, int c){
+		id = new String(i);
+		visitadores = new MyList();
+		distancia=-1;
+		costo = c;
+		anterior=null;
+		visitado=false;
+		total=0;
+	}
+	
+// 	public void setAnterior(Node ant){
+// 		anterior=ant;
+// 	}
+// 	
+// 	public Node getAnterior(){
+// 		return anterior;
+// 	}
     
-    public Node(String i, int c){
-	id = new String(i);
-	visitado = false;
-	distancia = 0;
-	costo = c;
-    }
-
+	public int getTotal(){
+		return total;
+	}
+	
+	public void setTotal(int num){
+		total=num;
+	}
+    
+	public int getCosto(){
+		return costo;
+	}
+    
    /**
     * Metodo que retorna el valor de distancia
     */
-    public int getDistancia(){
+	public int getDistancia(){
 		return distancia;
-    }
+	}
    /**
     * Metodo que modifica el valor de distancia
     */
-    public void setDistancia(int v){
+	public void setDistancia(int v){
 		distancia=v;
+	}
+    
+    /**
+    * Metodo que retorna si ya fue visitada la caja
+    */
+    public boolean isVisited(Node nodo){
+		return visitadores.contains(nodo);
+    }
+   /**
+    * Metodo que modifica el valor de visitado
+    */
+    public void setVisit(Node nodo){
+		visitadores.add(nodo);
     }
     
    /**

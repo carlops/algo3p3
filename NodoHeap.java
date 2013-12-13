@@ -15,7 +15,6 @@
 	private boolean marcado;
 	private int grado;
 	
-	
 	public NodoHeap(E elem,int prio) {
 		elemento=elem;
 		prioridad=prio;
@@ -24,7 +23,37 @@
 		hijos=new DoubleCircularList();
 		marcado=false;
 		grado=0;
-// 		padre=null;
+		padre=null;
+	}
+	
+	public void addHijo(NodoHeap hijo){
+		hijo.setPadre(this);
+		this.grado+=(hijo.getGrado()+1);
+		this.hijos.add(hijo);
+	}
+	
+	public void addHijos(DoubleCircularList nuevosHijos){
+		DoubleCircularListIterator iter = nuevosHijos.iterator();
+		while (iter.hasNext()){
+			NodoHeap aux = (NodoHeap) iter.next();
+			aux.setPadre(this);
+			this.grado+=(aux.getGrado()+1);
+		}
+		this.hijos.concatenate(nuevosHijos);
+		
+	}
+	
+	
+	public int getGrado(){
+		return grado;
+	} 
+	
+	public DoubleCircularList getHijos(){
+		return hijos;
+	}
+	
+	public NodoHeap getHijo(){
+		return (NodoHeap) hijos.getHead().getDato();
 	}
 	
 	public void setPadre(NodoHeap p){
@@ -35,9 +64,7 @@
 		return padre;
 	}
 	
-	public DoubleCircularList getHijos(){
-		return hijos;
-	}
+	
 	public void setPrioridad(int num){
 		prioridad=num;
 	}
@@ -80,7 +107,7 @@
 	
 	@Override
 	public String toString() { 
-	    return "Nodo: <" + this.elemento + ">";  
+	    return "NodoHeap: <" + this.elemento + ">";  
 	}
 
 }

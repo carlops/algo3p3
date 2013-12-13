@@ -55,6 +55,7 @@ public class MyListIterator<E> implements ListIterator<E> {
 				} else { 
 					//es un elemento intermedio
 					actual.getAnt().getAnt().setSig(actual);
+					actual.setAnt(actual.getAnt().getAnt());
 				}
 			}
 		}

@@ -15,7 +15,38 @@
  public class Main {
  
 	public static void main(String args[]) {
-		LecturaYBusqueda(args[0],args[1]);
+		try{
+			BufferedReader in = new BufferedReader(new FileReader(args[0]));
+			PrintStream out = new PrintStream(args[1]);
+
+			String linea1 = in.readLine(); //linea con el numero de laberintos
+			int laberintos = Integer.parseInt(linea1);// Numero de laberintos
+			
+			Digraph grafo=null;
+			
+			while (laberintos>0) {
+				MyList lista = new MyList();
+				grafo = Lectura(in,lista);
+				int num = Djkstra(grafo,lista);
+// 				Salida(out,num);
+				FibonacciHeap fib= new FibonacciHeap();
+				ListIterator liNodos= grafo.getNodes().iterator();
+				while (liNodos.hasNext()) {
+					Node aux=(Node)liNodos.next();
+					fib.insertar(aux,aux.getCosto());
+				}
+				laberintos--;
+			}
+		in.close();
+		out.close();
+			
+			
+			
+		} catch (FileNotFoundException fnfe) {
+		System.err.println("FileNotFoundException: "+fnfe.getMessage());
+		}   catch (IOException ioe) {
+	    System.err.println("IOException: "+ioe.getMessage());
+		}
 	}
 	
 	/**
@@ -23,16 +54,9 @@
 	 * llama a bfs para que lo recorre y retorna cual es la menor distancia 
 	 * entre los nodos establecidos
 	 */
-    public static void LecturaYBusqueda(String in,String out) {
+    public static Digraph Lectura(BufferedReader fin,List lista) {
 	try {
-	    PrintStream fout = new PrintStream(out);
-	    BufferedReader fin = new BufferedReader(new FileReader(in));
-	    
-		//se separan y guardan los enteros 
-		String line = fin.readLine(); //linea con el numero de laberintos
-		int laberintos = Integer.parseInt(line);// Numero de laberintos
-		
-		line = fin.readLine(); //linea con el numero de filas
+		String line = fin.readLine(); //linea con el numero de filas
 		int filas =Integer.parseInt(line);// entero: # de filas
 		
 		line = fin.readLine(); //linea con el numero de columnas
@@ -44,100 +68,69 @@
 		Node nodoInicial=null;
 		Node nodoFinal=null;
 		
-		// Para el ordenamiento de los nodos, nos basamos en un sistema
-		// de coordenas tridimencional (x,y,z) siendo:
-		// x: Numero de pisos
-		// y: Numero de filas
-		// z: Numero de columnas
-		
-		while ((laberintos!=0)&&(filas!=0)&&(columnas!=0)){//termina si los 3 enteros son 0
-			Digraph grafo= new DigraphTablaDeHash();//inicializa el grafo por escenario
-				while (auxFilas<filas+1){
-					line = fin.readLine(); //cada fila es una nueva linea
-						String[] e = line.split(" ");
-					while (auxColumnas<columnas+1){
-						//se recorre la linea caracter por caracter
-						
-// 						if ((line.charAt(auxColumnas-1)==' ')){
-// 							como el caracter es '$' salta al siguiente caracter 
-// 							auxColumnas++;
-// 							continue;
-// 						}
-						
-						//si no es '$' se crea y agrega el nuevo nodo al grafo
-						//con id ( x(piso),y(fila),z(columna) ) 
-						int costo = Integer.parseInt(e[auxColumnas-1]);
-						nodo= new Node(auxFilas+","+auxColumnas, costo);
-						grafo.add(nodo);
-						if ((auxFilas==1)&&(auxColumnas==1)){
-							nodoInicial=nodo;//se guarda cual es el nodo inicial
-						}
-						if ((auxColumnas==columnas)&&(auxFilas==filas)){
-							nodoFinal=nodo;//se guarda cual es el nodo final
-						}
-						
-						if (auxFilas!=1){//no hay filas mas arriba
-							String vertice= (auxFilas-1)+","+auxColumnas;
-// 							if (grafo.contains(vertice)){
-								//el grafo contiene al nodo que esta justo en la 
-								//fila de abajo, se hace la coneccion
-								Edge lado = new Edge(nodo.getId(),vertice);
-								grafo.add(lado);
-								lado = new Edge(vertice,nodo.getId());
-								grafo.add(lado);
-// 							}
-						}
-						
-						if (auxColumnas!=1){ //no hay columnas mas atras
-							String vertice= auxFilas+","+(auxColumnas-1);
-// 							if (grafo.contains(vertice)){
-								//el grafo contiene al nodo que esta justo en la 
-								//columna anterior, se hace la coneccion
-								Edge lado = new Edge(nodo.getId(),vertice);
-								grafo.add(lado);
-								lado = new Edge(vertice,nodo.getId());
-								grafo.add(lado);
-// 							}
-						}
-						auxColumnas++;//siguiente columna
-					}
-					auxFilas++;//siguiente fila
-					auxColumnas=1;
+		Digraph grafo= new DigraphTablaDeHash();
+		while (auxFilas<filas+1){
+			line = fin.readLine(); //cada fila es una nueva linea
+			String[] e = line.split(" ");//los costos estan separados por " "
+			while (auxColumnas<columnas+1){
+				int costo = Integer.parseInt(e[auxColumnas-1]);
+				nodo= new Node(auxFilas+","+auxColumnas, costo);
+				grafo.add(nodo);
+				if ((auxFilas==1)&&(auxColumnas==1)){
+					nodoInicial=nodo;//se guarda cual es el nodo inicial
 				}
-				auxFilas=1;
-				laberintos--;
-			
-			//Se recorre el grafo con bfs para encontrar la menor distancia 
+				if ((auxColumnas==columnas)&&(auxFilas==filas)){
+					nodoFinal=nodo;//se guarda cual es el nodo final
+				}
+				
+				if (auxFilas!=1){//no hay filas mas arriba
+					String vertice= (auxFilas-1)+","+auxColumnas;
+// 						Edge lado = new Edge(nodo.getId(),vertice);
+// 						grafo.add(lado);
+						Edge lado = new Edge(vertice,nodo.getId());
+						grafo.add(lado);
+				}
+				
+				if (auxColumnas!=1){ //no hay columnas mas atras
+					String vertice= auxFilas+","+(auxColumnas-1);
+// 						Edge lado = new Edge(nodo.getId(),vertice);
+// 						grafo.add(lado);
+						Edge lado = new Edge(vertice,nodo.getId());
+						grafo.add(lado);
+				}
+				auxColumnas++;//siguiente columna
+			}
+			auxFilas++;//siguiente fila
+			auxColumnas=1;
+		}
+		lista.add(nodoInicial);
+		lista.add(nodoFinal);
+		return grafo;
+		
+	}   catch (IOException ioe) {
+	    System.err.println("IOException: "+ioe.getMessage());
+	    return null;
+	}
+	}
+	
+	
+	public static int Djkstra(Digraph grafo,MyList lista){
+			//Se recorre el grafo con bfs para encontrar el camino de menor costo 
 			//entre nodoInicial y nodoFinal, si es 0 no hay un camino
 			BFS busqueda= new BFS();
-			int num= busqueda.bfs(grafo,nodoInicial,nodoFinal);
-			
-			if (num==0) fout.printf("%s\n", "Atrapado!");
-			else fout.printf("%s\n", "Escape en "+num+" minuto(s).");
-
-			System.out.println("\n"+grafo+"\n");
-			
-			if (laberintos!=0){
-				//Se inicializa nuevamente para el siguiente ciclo
-				line = fin.readLine();
-	// 			e = line.split(" ");
-	// 			pisos = Integer.parseInt(e[0]);
-				filas =Integer.parseInt(line);
-				
-				line = fin.readLine();
-				columnas =Integer.parseInt(line);
-			}
-			  
+			Node nodoInicial =(Node)lista.get(0);
+			Node nodoFinal =(Node) lista.get(1);
+			int num= busqueda.bfsCosto(grafo,nodoInicial,nodoFinal);
+// 			System.out.println("\n"+grafo+"\n");
+			return num;
 		}
 		
-		fin.close();
-		fout.close();
-		
-	} catch (FileNotFoundException fnfe) {
-		System.err.println("FileNotFoundException: "+fnfe.getMessage());
-	}  catch (IOException ioe) {
-	    System.err.println("IOException: "+ioe.getMessage());
-	}
+	public static void Salida(PrintStream fout,int num){
+// 		try {
+			fout.printf("%s\n", "Escape en "+num+" minuto(s).");
+// 		} catch (IOException ioe) {
+// 	    System.err.println("IOException: "+ioe.getMessage());
+// 		}
 	}
 	
  }

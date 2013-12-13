@@ -150,6 +150,7 @@ public class DoubleCircularList<E> implements List<E>{
      * retorna true, sino retorna false.
      */
 	public boolean remove(E element){
+	
 		ListIterator<E> iter = iterator();
 		int count =0;
 		while (iter.hasNext()&&count<size) {
@@ -176,7 +177,7 @@ public class DoubleCircularList<E> implements List<E>{
     /**
      * Devuelve un iterador sobre la lista.
      */
-    public ListIterator<E> iterator() {
+    public DoubleCircularListIterator<E> iterator() {
 		return new DoubleCircularListIterator(this);
     }
     
@@ -196,8 +197,24 @@ public class DoubleCircularList<E> implements List<E>{
    /**
 	* Cambia el primer elemento de la lista.
 	*/
-    public void setHead(Caja primera){
-		Actual=primera;
+    public void setHead(E primera){		
+		Caja aux=Actual.getSig();
+		
+		while(aux!=Actual){
+			if (aux.getDato().equals(primera))
+				Actual=aux;
+			else
+				aux=aux.getSig();
+		}
+		
+    }
+    
+   /**
+	* Cambia el primer elemento de la lista.
+	*/
+    public void setHeadSuper(Caja primera){
+		Actual= primera;
+    
     }
 	
    /**
@@ -231,7 +248,7 @@ public class DoubleCircularList<E> implements List<E>{
 			this.size += l1.getSize(); 
 		}
 		if (this.isEmpty()){
-			this.setHead(l1.getHead());
+			this.setHeadSuper(l1.getHead());
 			this.size = l1.getSize();
 		}
 	}
