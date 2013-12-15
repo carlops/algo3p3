@@ -39,6 +39,54 @@ public class BFS {
 	
 	
 	public static int bfsCosto(Digraph g,Node inicio,Node fin){
+		inicio.setVisit(true); //se marca como visitado
+		FibonacciHeap cola = new FibonacciHeap(); //creamos una cola
+		inicio.setDistancia(inicio.getCosto());
+		cola.insertar(inicio,inicio.getDistancia()); //agregamos ese nodo
+		int total=0;int distTotal=-1;
+		
+		while (cola.getSize()>0){ //mientras la cola no este vacia
+			Node actual= (Node) cola.desencolarMinimo();
+			
+			ListIterator<Node> sucesores= g.getSucs(actual.getId()).iterator();
+			while (sucesores.hasNext()){
+			//para los sucesores del nodo si no han sido visitados
+			//se aumenta su distancia, se visitan y se agregan a la cola
+				Node aux=sucesores.next();
+				
+				
+				int dist=actual.getDistancia()+aux.getCosto();
+				
+				if ((dist<=aux.getDistancia()) || (aux.getDistancia()==-1)){
+					
+					if (dist<aux.getDistancia()||(aux.getDistancia()==-1)){ //lo encontramos por primera vez
+						aux.setDistancia(dist);//cambia su distancia
+						aux.unvisit();
+						
+						if (aux.equals(fin)) {
+							System.out.println("--1.llegue a fin por "+actual+" con costo "+dist);
+							distTotal=dist;
+							total=1;
+						}
+// 						System.out.println("voy por "+actual+" con costo "+dist+" a "+aux);
+					}
+					
+					if (!aux.isVisited(actual)){ 
+						if (!actual.isVisited(aux)){
+							aux.setVisit(actual); //se marca como visitado 
+						}
+// 						if (!aux.equals(fin)){
+						cola.insertar(aux,aux.getDistancia()); //se agrega a la cola
+// 						}
+					}
+				}
+			}
+		}
+// 		System.out.println("cant: "+total+"\tdist: "+distTotal);
+		return distTotal; //no se encontro un camino de inicio a fin
+	}
+	
+	public static int bfsCosto2(Digraph g,Node inicio,Node fin){
 		
 		FibonacciHeap cola = new FibonacciHeap(); //creamos una cola
 		cola.insertar(inicio,inicio.getCosto()); //agregamos ese nodo
@@ -79,6 +127,7 @@ public class BFS {
 		System.out.println("cant: "+total+"\tdist: "+distTotal);
 		return distTotal; //no se encontro un camino de inicio a fin
 	}
+
 }
 
 

@@ -107,7 +107,7 @@
 	
 	@Override
 	public String toString() { 
-	    return "NodoHeap: <" + this.elemento + ">";  
+	    return "NodoHeap: < " + this.elemento +" prioridad "+prioridad+" >";  
 	}
 
 }

@@ -111,6 +111,15 @@ public class FibonacciHeap<T> {
 		return mindata;
 	}
 	
+	public String toString(){
+		String ret;
+		ret="Fib: Tamanio:"+size+"\n";
+		ret+="\t"+raices;
+		
+		return ret;
+	}
+	
+	
 	public void imprimirHeap() {
 		NodoHeap aux = min;
 		if (aux == null)

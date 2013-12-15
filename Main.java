@@ -27,8 +27,10 @@
 			while (laberintos>0) {
 				MyList lista = new MyList();
 				grafo = Lectura(in,lista);
-				int num = Djkstra(grafo,lista);
-// 				Salida(out,num);
+				int num[] = new int[2];
+				num[1] = Djkstra(grafo,lista);
+				num[0]=Caminos((Node)lista.get(1));
+				Salida(out,num);
 				FibonacciHeap fib= new FibonacciHeap();
 				ListIterator liNodos= grafo.getNodes().iterator();
 				while (liNodos.hasNext()) {
@@ -85,17 +87,17 @@
 				
 				if (auxFilas!=1){//no hay filas mas arriba
 					String vertice= (auxFilas-1)+","+auxColumnas;
-// 						Edge lado = new Edge(nodo.getId(),vertice);
-// 						grafo.add(lado);
-						Edge lado = new Edge(vertice,nodo.getId());
+						Edge lado = new Edge(nodo.getId(),vertice);
+						grafo.add(lado);
+						lado = new Edge(vertice,nodo.getId());
 						grafo.add(lado);
 				}
 				
 				if (auxColumnas!=1){ //no hay columnas mas atras
 					String vertice= auxFilas+","+(auxColumnas-1);
-// 						Edge lado = new Edge(nodo.getId(),vertice);
-// 						grafo.add(lado);
-						Edge lado = new Edge(vertice,nodo.getId());
+						Edge lado = new Edge(nodo.getId(),vertice);
+						grafo.add(lado);
+						lado = new Edge(vertice,nodo.getId());
 						grafo.add(lado);
 				}
 				auxColumnas++;//siguiente columna
@@ -125,9 +127,24 @@
 			return num;
 		}
 		
-	public static void Salida(PrintStream fout,int num){
+	public static int Caminos(Node nodo){
+		Node aux;
+		int num =nodo.getVisitas().getSize();
+// 		System.out.println(""+nodo+"\n\t"+ nodo.getVisitas());
+		if (num==0)
+			return 1;
+		num=0;
+		ListIterator iter = nodo.getVisitas().iterator();
+		while (iter.hasNext()){
+			aux=(Node)iter.next();
+			num = num+Caminos(aux);
+		}
+		return num;
+	}
+		
+	public static void Salida(PrintStream fout,int[] num){
 // 		try {
-			fout.printf("%s\n", "Escape en "+num+" minuto(s).");
+			fout.printf("%d %d\n",num[0],num[1]);
 // 		} catch (IOException ioe) {
 // 	    System.err.println("IOException: "+ioe.getMessage());
 // 		}
