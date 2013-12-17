@@ -29,7 +29,10 @@
 				grafo = Lectura(in,lista);
 				int num[] = new int[2];
 				num[1] = Djkstra(grafo,lista);
-				num[0]=Caminos((Node)lista.get(1));
+				Node fin = (Node) lista.get(1);
+// 				Caminos(fin,fin,(Node)lista.get(0));
+				num[0]=Caminos2((Node)lista.get(1),(Node)lista.get(0),new MyList());
+// 				num[0] = fin.getTotal();
 				Salida(out,num);
 				FibonacciHeap fib= new FibonacciHeap();
 				ListIterator liNodos= grafo.getNodes().iterator();
@@ -117,27 +120,59 @@
 	
 	
 	public static int Djkstra(Digraph grafo,MyList lista){
-			//Se recorre el grafo con bfs para encontrar el camino de menor costo 
-			//entre nodoInicial y nodoFinal, si es 0 no hay un camino
-			BFS busqueda= new BFS();
-			Node nodoInicial =(Node)lista.get(0);
-			Node nodoFinal =(Node) lista.get(1);
-			int num= busqueda.bfsCosto(grafo,nodoInicial,nodoFinal);
-// 			System.out.println("\n"+grafo+"\n");
-			return num;
+		//Se recorre el grafo con bfs para encontrar el camino de menor costo 
+		//entre nodoInicial y nodoFinal, si es 0 no hay un camino
+		BFS busqueda= new BFS();
+		Node nodoInicial =(Node)lista.get(0);
+		Node nodoFinal =(Node) lista.get(1);
+		int num= busqueda.bfsCosto(grafo,nodoInicial,nodoFinal);
+// 		System.out.println("\n"+grafo+"\n");
+		return num;
+	}
+	
+	public static void Caminos(Node nodo,Node fin, Node ini){
+		Node aux;
+// 		System.out.println(""+nodo+" de costo: "+nodo.getCosto()+" y distancia: "+nodo.getDistancia()+"\n\t"+ nodo.getVisitas());
+		int num =nodo.getDistancia()-nodo.getCosto();
+		if (num<0){//No era camino
+			return;
+		}
+	
+		if (nodo.equals(ini)&&num==0){//Es un camino
+			fin.setTotal(fin.getTotal()+1);
+			return;
 		}
 		
-	public static int Caminos(Node nodo){
-		Node aux;
-		int num =nodo.getVisitas().getSize();
-// 		System.out.println(""+nodo+"\n\t"+ nodo.getVisitas());
-		if (num==0)
-			return 1;
-		num=0;
+		//Es un nodo intermedio
 		ListIterator iter = nodo.getVisitas().iterator();
 		while (iter.hasNext()){
 			aux=(Node)iter.next();
-			num = num+Caminos(aux);
+			aux.setDistancia(nodo.getDistancia()-nodo.getCosto());
+			Caminos(aux,fin,ini);
+		}
+	}
+	
+	public static int Caminos2(Node nodo,Node nfin,MyList lista){
+		Node aux;
+// 		int distancia =nodo.getDistancia()-nodo.getCosto();
+		int num =nodo.getVisitas().getSize();
+// 		System.out.println(""+nodo+"\n\t"+ nodo.getVisitas());
+		if (nodo.equals(nfin))
+			return 1;
+			
+		
+		if (lista.contains(nodo))
+			return 0;
+			
+		num=0;
+		lista.add(nodo);
+		System.out.println("lista: "+ lista);
+		ListIterator iter = nodo.getVisitas().iterator();
+		while (iter.hasNext()){
+			aux=(Node)iter.next();
+// 			aux.setDistancia(nodo.getDistancia()-nodo.getCosto());
+			num = num+Caminos2(aux,nfin,lista.clone());
+			System.out.println("soy "+aux+"\n\t");
 		}
 		return num;
 	}

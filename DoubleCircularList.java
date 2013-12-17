@@ -223,7 +223,13 @@ public class DoubleCircularList<E> implements List<E>{
 	*/
 	public DoubleCircularList<E> clone(){
 		DoubleCircularList<E> aux = new DoubleCircularList();
-		return aux=this;// Se hace de esta manera porque no se logro 
+		
+		ListIterator<E> iter = iterator();
+		while (iter.hasNext()) {
+			aux.add(iter.next());
+		}
+		
+		return aux;	// Se hace de esta manera porque no se logro 
 						//implementar el clone generico necesario debido a
 						//que el API no deja hacerlo al tenerlo protected
 	}

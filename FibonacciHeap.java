@@ -24,6 +24,10 @@ public class FibonacciHeap<T> {
 		return raices;
 	}
 	
+	public boolean contains(T elem){
+		
+		return raices.contains(elem);
+	}
 	
 	public int getSize(){
 		return size;

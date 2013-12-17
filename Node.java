@@ -73,13 +73,14 @@ public class Node implements Cloneable {
     * Metodo que retorna si ya fue visitada la caja
     */
     public boolean isVisited(Node nodo){
-		return (visitado || visitadores.contains(nodo));
+		return (visitadores.contains(nodo));
     }
    /**
     * Metodo que modifica el valor de visitado
     */
     public void setVisit(Node nodo){
 		visitadores.add(nodo);
+		visitado=true;
     }
     
     public void unvisit(){

@@ -48,6 +48,7 @@ public class BFS {
 		while (cola.getSize()>0){ //mientras la cola no este vacia
 			Node actual= (Node) cola.desencolarMinimo();
 			
+			System.out.println("Saque a: "+actual+" con costo "+actual.getCosto()+" y la distancia: "+actual.getDistancia());
 			ListIterator<Node> sucesores= g.getSucs(actual.getId()).iterator();
 			while (sucesores.hasNext()){
 			//para los sucesores del nodo si no han sido visitados
@@ -63,26 +64,43 @@ public class BFS {
 						aux.setDistancia(dist);//cambia su distancia
 						aux.unvisit();
 						
+// 						System.out.println("voy por "+actual+" con costo "+dist+" a "+aux);
 						if (aux.equals(fin)) {
 							System.out.println("--1.llegue a fin por "+actual+" con costo "+dist);
 							distTotal=dist;
 							total=1;
 						}
-// 						System.out.println("voy por "+actual+" con costo "+dist+" a "+aux);
 					}
+					
+// 					if (aux.equals(fin)){
+// 					  System.out.println("--1.llegue a fin por "+actual+" con costo "+dist);
+// 					  total++;
+// 					}
 					
 					if (!aux.isVisited(actual)){ 
 						if (!actual.isVisited(aux)){
-							aux.setVisit(actual); //se marca como visitado 
+							if (!aux.isVisited()){
+								System.out.println("--++inserto a: "+aux+" con costo "+aux.getCosto());
+								cola.insertar(aux,aux.getDistancia());
+							}//se agrega a la cola
 						}
+						if (aux.getCosto()==0){
+							System.out.println("--llegue a: "+aux+" con costo(0) "+aux.getCosto()+" y la distancia: "+aux.getDistancia()+" llegando con: "+dist);
+							aux.setVisit(actual); //se marca como visitado
+						} else 
+							if (!actual.isVisited(aux)){
+								aux.setVisit(actual);
+								System.out.println("--llegue a: "+aux+" con costo "+aux.getCosto()+" y la distancia: "+aux.getDistancia()+" llegando con: "+dist);
+							}
 // 						if (!aux.equals(fin)){
-						cola.insertar(aux,aux.getDistancia()); //se agrega a la cola
 // 						}
 					}
 				}
 			}
 		}
-// 		System.out.println("cant: "+total+"\tdist: "+distTotal);
+  System.out.println("Fin "+fin+" con costo "+fin.getCosto()+" y la distancia: "+fin.getDistancia());
+
+		System.out.println("cant: "+total+"\tdist: "+distTotal);
 		return distTotal; //no se encontro un camino de inicio a fin
 	}
 	

@@ -216,20 +216,12 @@ public class MyList<E> implements List<E>{
 	*/
 	public MyList<E> clone(){
 		MyList<E> aux = new MyList();
-		return aux=this;// Se hace de esta manera porque no se logro 
-						//implementar el clone generico necesario debido a
-						//que el API no deja hacerlo al tenerlo protected
 		
-		/*
-		Caja cajaAux= this.getHead();
-		if (this.getHead()==null)//lista a clonar es nula
-			return aux;
-		// Ciclo clonador
-		while (cajaAux!=null){
-			this.addCaja((Caja)cajaAux.clone());
-			cajaAux=cajaAux.getSig();
+		ListIterator<E> iter = iterator();
+		while (iter.hasNext()) {
+			aux.add(iter.next());
 		}
-		*/
+		return aux;
 	}
     
    /**
