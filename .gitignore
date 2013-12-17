@@ -1,5 +1,13 @@
 *.class
 *~
+in
+out
+Casos*
+casos*
+*.out
+*.in
+lol
+*.kate-swp
 
 # Package Files #
 *.jar

@@ -27,19 +27,11 @@
 			while (laberintos>0) {
 				MyList lista = new MyList();
 				grafo = Lectura(in,lista);
+				
 				int num[] = new int[2];
-				num[1] = Djkstra(grafo,lista);
-				Node fin = (Node) lista.get(1);
-// 				Caminos(fin,fin,(Node)lista.get(0));
-				num[0]=Caminos2((Node)lista.get(1),(Node)lista.get(0),new MyList());
-// 				num[0] = fin.getTotal();
+				num = Djkstra(grafo,lista);
+
 				Salida(out,num);
-				FibonacciHeap fib= new FibonacciHeap();
-				ListIterator liNodos= grafo.getNodes().iterator();
-				while (liNodos.hasNext()) {
-					Node aux=(Node)liNodos.next();
-					fib.insertar(aux,aux.getCosto());
-				}
 				laberintos--;
 			}
 		in.close();
@@ -119,37 +111,20 @@
 	}
 	
 	
-	public static int Djkstra(Digraph grafo,MyList lista){
+	public static int[] Djkstra(Digraph grafo,MyList lista){
 		//Se recorre el grafo con bfs para encontrar el camino de menor costo 
 		//entre nodoInicial y nodoFinal, si es 0 no hay un camino
 		BFS busqueda= new BFS();
 		Node nodoInicial =(Node)lista.get(0);
 		Node nodoFinal =(Node) lista.get(1);
-		int num= busqueda.bfsCosto(grafo,nodoInicial,nodoFinal);
-// 		System.out.println("\n"+grafo+"\n");
-		return num;
-	}
-	
-	public static void Caminos(Node nodo,Node fin, Node ini){
-		Node aux;
-// 		System.out.println(""+nodo+" de costo: "+nodo.getCosto()+" y distancia: "+nodo.getDistancia()+"\n\t"+ nodo.getVisitas());
-		int num =nodo.getDistancia()-nodo.getCosto();
-		if (num<0){//No era camino
-			return;
-		}
-	
-		if (nodo.equals(ini)&&num==0){//Es un camino
-			fin.setTotal(fin.getTotal()+1);
-			return;
-		}
+		Digraph grafoSol = new DigraphTablaDeHash();
+		int num[] = new int[2]; 
+		num[0] =busqueda.bfsCosto(grafo,nodoInicial,nodoFinal,grafoSol);
 		
-		//Es un nodo intermedio
-		ListIterator iter = nodo.getVisitas().iterator();
-		while (iter.hasNext()){
-			aux=(Node)iter.next();
-			aux.setDistancia(nodo.getDistancia()-nodo.getCosto());
-			Caminos(aux,fin,ini);
-		}
+		System.out.println("Grafo Sol:\n"+grafoSol+"\n");
+		num[1] =busqueda.bfsCaminos(grafoSol,nodoFinal,nodoInicial);
+		
+		return num;
 	}
 	
 	public static int Caminos2(Node nodo,Node nfin,MyList lista){
@@ -178,11 +153,8 @@
 	}
 		
 	public static void Salida(PrintStream fout,int[] num){
-// 		try {
-			fout.printf("%d %d\n",num[0],num[1]);
-// 		} catch (IOException ioe) {
-// 	    System.err.println("IOException: "+ioe.getMessage());
-// 		}
+		fout.printf("%d %d\n",num[1],num[0]);
+
 	}
 	
  }
